@@ -1,0 +1,76 @@
+from gpiozero import Buzzer
+from time import sleep
+import argparse
+
+morse_data = {"A": "dot,dash",
+              "B": "dash,dot,dot,dot",
+              "C": "dash,dot,dash,dot",
+              "D": "dash,dot,dot",
+              "E": "dot",
+              "F": "dot,dot,dash,dot",
+              "G": "dash,dash,dot",
+              "H": "dot,dot,dot,dot",
+              "I": "dot,dot",
+              "J": "dot,dash,dash,dash",
+              "K": "dash,dot,dash",
+              "L": "dot,dash,dot,dot",
+              "M": "dash,dash",
+              "N": "dash,dot",
+              "O": "dash,dash,dash",
+              "P": "dot,dash,dash,dot",
+              "Q": "dash,dash,dot,dash",
+              "R": "dot,dash,dot",
+              "S": "dot,dot,dot",
+              "T": "dash",
+              "U": "dot,dot,dash",
+              "V": "dot,dot,dot,dash",
+              "W": "dot,dash,dash",
+              "X": "dash,dot,dot,dash",
+              "Y": "dash,dot,dash,dash",
+              "Z": "dash,dash,dot,dot",
+              "space": "dot,dot,dot,dot,dot,dot,dot",
+              "any": "dot",
+              "1": "dot,dash,dash,dash,dash",
+              "2": "dot,dot,dash,dash,dash",
+              "3": "dot,dot,dot,dash,dash",
+              "4": "dot,dot,dot,dot,dash",
+              "5": "dot,dot,dot,dot,dot",
+              "6": "dash,dot,dot,dot,dot",
+              "7": "dash,dash,dot,dot,dot",
+              "8": "dash,dash,dash,dot,dot",
+              "9": "dash,dash,dash,dash,dot",
+              "0": "dash,dash,dash,dash,dash"}
+
+def dot(buzz):
+    buzz.on()
+    sleep(0.1)
+    buzz.off()
+    sleep(0.2)
+
+
+def dash(buzz):
+    buzz.on()
+    sleep(0.3)
+    buzz.off()
+    sleep(0.3)
+
+
+mapping = {"dot": dot, "dash": dash}
+
+def convert(input_string, buzz):
+    try:
+        morse_sequence = morse_data[input_string]
+    except KeyError:
+        morse_sequence = morse_data["any"]
+
+    list_dotdash = morse_sequence.split(',')
+    for item in list_dotdash:
+        buzz_func = mapping[item]
+        buzz_func(buzz)
+    
+
+input_text = input("Input words here:")
+
+with Buzzer(18) as buzz:
+    for item in input_text.upper():
+        convert(item, buzz)
